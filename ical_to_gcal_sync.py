@@ -57,7 +57,6 @@ def get_enac_ics(downloadPath, icsPath, url, user, password, nombre_de_mois):
             os.remove(icsPath + f"/planning ({i}).ics")
         else:
             logger.error(f"Impossible de supprimer le fichier planning ({i}).ics car il n'existe pas")
-            print(f"Impossible de supprimer le fichier planning ({i}).ics car il n'existe pas")
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')  # Run browser in headless mode
     #browser_locale = 'fr'
@@ -89,7 +88,13 @@ def get_enac_ics(downloadPath, icsPath, url, user, password, nombre_de_mois):
     driver.find_element(By.XPATH, "//button[@class='fc-month-button ui-button ui-state-default ui-corner-left ui-corner-right']").click()
     time.sleep(2)
     logger.info("Téléchargement du planning pour le mois: " + str(1))
-    driver.find_element(By.ID, "form:j_idt121").click()
+    try:
+        driver.find_element(By.ID, "form:j_idt121").click()
+    except:
+        logger.error("Erreur lors du téléchargement du planning pour le mois: " + str(1))
+        logger.info("> Retrying to download the file in 2s")
+        time.sleep(2)
+        driver.find_element(By.ID, "form:j_idt121").click()
     time.sleep(2)
     for _ in range(2,nombre_de_mois+1):
         try:

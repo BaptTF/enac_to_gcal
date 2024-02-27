@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Calendar
+Comment=Script pour mettre à jour le calendrier ENAC
+Exec=/home/baptiste/enac_to_gcal/calendar.sh
+Icon=/home/baptiste/enac_to_gcal/calendar_icon.png
+Terminal=true
+Type=Application
+StartupNotify=true
