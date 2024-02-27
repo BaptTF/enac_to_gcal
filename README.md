@@ -1,32 +1,26 @@
-This script can be used to periodically pull events from an iCal feed and insert them into a selected Google Calendar using the API for that service. 
-
-Why do this instead of importing the iCal URL straight into GCal? The rate at which GCal refreshes iCal feeds is glacially slow, typically somewhere between 1-2 days. This has been the case for the best part of a decade now and Google show absolutely no interest in providing a sensible way to even trigger a manual refresh (e.g. https://productforums.google.com/forum/#!msg/calendar/iXp8fZfgU2E/wK9Qf6nfI48J). This script is a simple way to work around that limitation - it's not much use to me if I add an event to my todo list and then check my calendar the next day and forget about it because it hasn't been synced from the associated iCal feed yet. 
-
-I've been running this script on an RPi as a cronjob and it's working well for me. I'm putting the code here in case it's useful to anyone similarly frustrated with Google Calendar and its handling of iCal feeds. Note that it's not particularly polished or well-packaged, and importantly doesn't try to handle all possible types of iCal events. It only does the minimum I needed for my own workflow. 
-
-## Using the script
-
+## IMPORTANT
 > NOTE: requires Python 3.7+
+
+Ce script utilise **Google Chrome** principalement parce que c'est le navigateur le plus utilisé, si tu veux utilisé un autre navigateur tu peux modifier `ical_to_gcal_sync.py` ligne 61-66
+
+## UTILISER LE SCRIPT
 
 1. Copy `config.py.example` to a new file `config.py` or a custom file (see *Multiple Configurations* below)
 2. Modify the value of `ICAL_FEEDS` to configure your calendars. It should contain a list with one or more entries where each entry is a dict with the following structure:
 ```python
 ICAL_FEEDS = [
     {
-        # source of calendar events. normally this is an iCal feed URL, but you can also use a local path
-        # containing .ics files as a data source instead (in that case set 'files' to True)
-        'source': '<ICAL URL OR DIRECTORY PATH>',
         # the ID of the Google calendar to insert events into. this can be "primary" if you want to use the
         # default main calendar, or a 'longID@group.calendar.google.com' string for secondary calendars. You
         # can find the long calendar ID on its settings page.
         'destination': '<GOOGLE CAL ID>',
-        # set to False if source is a URL, True if it's a local path
-        'files': False,
+        # put your path of your download file
+        "download": r"<Path to your download folder>"
     },
 ]
 ```
-3. If your iCal feed is password protected you should also set the variables `ICAL_FEED_USER` and `ICAL_FEED_PASS` appropriately. 
-4. Create and activate a virtualenv and then run `pip install -r requirements.txt`
+3. Tu dois mettre ton nom d'utilisateur et mdp dans `ICAL_FEED_USER` et `ICAL_FEED_PASS`. 
+4. Run `pip install -r requirements.txt`
 5. Go through the process of registering an app in the Google Calendar API dashboard in order to obtain an OAuth client ID. This process is described at https://developers.google.com/google-apps/calendar/quickstart/python. It's important to select "Desktop app" for the OAuth "Application Type" field. Once the credentials are created, download the JSON file, rename it to `ical_to_gcal_sync_client_secret.json` and  place it in the same location as the script. 
 6. Until recently you could leave your Google Cloud project in "testing" mode and the OAuth flow would work indefinitely. However as [described here](https://support.google.com/cloud/answer/10311615#publishing-status&zippy=%2Ctesting) any tokens for apps in this mode will now expire after 7 days, including refresh tokens. To avoid having to manually re-auth every time this happens, go to [your OAuth consent page configuration](https://console.cloud.google.com/apis/credentials/consent) and set the "Publishing status" to "Production". This will display a warning that you need to do a lot of verification steps, but things still seem to work if you ignore the warnings. 
 7. Run the script. This should trigger the OAuth2 authentication process and prompt you to allow the app you created in step 5 to access your calendars. If successful it should store the credentials in `ical_to_gcal_sync_credentials.json`.

@@ -13,15 +13,12 @@
 #  Feeds can be of mixed types
 
 ICAL_FEEDS = [
-    {'source': '<ICAL URL OR DIRECTORY PATH>', 'destination': '<GOOGLE CAL ID>', 'files': False},
-#   ...
+    {'source': 'ics', 'destination': '<GOOGLE CAL ID>', 'files': True, "download": r"<Path to your download folder>"},
 ]
 
 # Authentication information for the ical feeds.
-# The same credentials are used for all feeds where 'files' is False
-# If the feed does not require authentication or if FILES is true, it should be left to None
-ICAL_FEED_USER = None
-ICAL_FEED_PASS = None
+ICAL_FEED_USER = "PUT YOUR ENAC LOGIN HERE"
+ICAL_FEED_PASS = "PUT YOUR ENAC PASSWORD HERE"
 
 # If the iCalendar server is using a self signed ssl certificate, certificate checking must be disabled.
 # This option applies to all feeds where 'files' is False

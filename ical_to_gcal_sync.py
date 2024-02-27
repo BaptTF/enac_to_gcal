@@ -6,6 +6,8 @@ import string
 import re
 import sys
 import os
+import shutil
+import fileinput
 
 import googleapiclient
 import arrow
@@ -18,6 +20,12 @@ from datetime import datetime, timezone, timedelta
 from auth import auth_with_calendar_api
 from pathlib import Path
 from httplib2 import Http
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.alert import Alert
 
 config = {}
 config_path=os.environ.get('CONFIG_PATH', 'config.py')
@@ -33,6 +41,110 @@ handler.setFormatter(logging.Formatter('%(asctime)s|[%(levelname)s] %(message)s'
 logger.addHandler(handler)
 
 DEFAULT_TIMEDELTA = timedelta(days=365)
+
+
+def get_enac_ics(downloadPath, icsPath, url, user, password, nombre_de_mois):
+
+    #nous devrions vérifier si le fichier existe ou non avant de le supprimer.
+    logger.info(f"> Processing: {nombre_de_mois} month")
+    if os.path.exists(icsPath + "/planning.ics"):
+        logger.info("Suppression du fichier: " + icsPath + "/planning.ics")
+        os.remove(icsPath + "/planning.ics")
+    else:
+        logger.error("Impossible de supprimer le fichier planning.ics car il n'existe pas")
+    for i in range(1,nombre_de_mois):
+        if os.path.exists(icsPath + f"/planning ({i}).ics"):
+            os.remove(icsPath + f"/planning ({i}).ics")
+        else:
+            logger.error(f"Impossible de supprimer le fichier planning ({i}).ics car il n'existe pas")
+            print(f"Impossible de supprimer le fichier planning ({i}).ics car il n'existe pas")
+    chrome_options = Options()
+    chrome_options.add_argument('--headless=new')  # Run browser in headless mode
+    #browser_locale = 'fr'
+    #chrome_options.add_argument("--lang={}".format(browser_locale))
+    logger.info("> Lancement du navigateur")
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.implicitly_wait(10)
+    logger.info("> Connexion au site de ENAC")
+    driver.get(url)
+    if driver.find_element(By.ID, "j_idt30:j_idt40_label").text != "Français":
+        driver.find_element(By.XPATH, "//div[@class='ui-selectonemenu-trigger ui-state-default ui-corner-right']").click()
+        time.sleep(2)
+        driver.find_element(By.ID, "j_idt30:j_idt40_1").click()
+        time.sleep(2)
+        alert = Alert(driver)
+        alert.accept()
+        time.sleep(2)
+    driver.find_element(By.ID, "username").send_keys(user)
+    driver.find_element(By.ID, "password").send_keys(password)
+    logger.info("> Login Success")
+    time.sleep(2)
+    driver.find_element(By.ID, "j_idt28").click()
+    time.sleep(2)
+    try:
+        driver.find_element(By.LINK_TEXT, "Mon emploi du temps").click()
+    except:
+        driver.find_element(By.LINK_TEXT, "My schedule").click()
+    time.sleep(2)
+    driver.find_element(By.XPATH, "//button[@class='fc-month-button ui-button ui-state-default ui-corner-left ui-corner-right']").click()
+    time.sleep(2)
+    logger.info("Téléchargement du planning pour le mois: " + str(1))
+    driver.find_element(By.ID, "form:j_idt121").click()
+    time.sleep(2)
+    for _ in range(2,nombre_de_mois+1):
+        try:
+            logger.info("Téléchargement du planning pour le mois: " + str(_))
+            driver.find_element(By.XPATH, '//body').send_keys(Keys.CONTROL + Keys.HOME)
+            time.sleep(5)
+            driver.find_element(By.XPATH, "//button[@class='fc-next-button ui-button ui-state-default ui-corner-left ui-corner-right']").click()
+            time.sleep(5)
+            driver.find_element(By.ID, "form:j_idt121").click()
+            time.sleep(5)
+        except:
+            logger.error("Erreur lors du téléchargement du planning pour le mois: " + str(_))
+    time.sleep(2)
+
+    #cut paste the ics file
+    if os.path.exists(downloadPath + "/planning.ics"):
+        logger.info("> Moving downloaded ics")
+        shutil.move(downloadPath + "/planning.ics", icsPath)
+    else:
+        logger.error("Impossible de déplacer le fichier planning.ics car il n'existe pas")
+    for i in range(1,nombre_de_mois):
+        if os.path.exists(downloadPath + f"/planning ({i}).ics"):
+            shutil.move(downloadPath + f"/planning ({i}).ics", icsPath)
+        else:
+            logger.error(f"Impossible de déplacer le fichier planning ({i}).ics car il n'existe pas")
+    time.sleep(2)
+
+def patch_ics_files(directory):
+    """
+    Patch all .ics files in the specified directory by replacing the X-WR-TIMEZONE property
+    with a standard timezone definition.
+    """
+    # Specify the replacement value for X-WR-TIMEZONE
+    replacement = """BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:STANDARD
+DTSTART:19710101T030000
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+END:STANDARD
+END:VTIMEZONE"""
+
+    # Loop over each file in the directory
+    for filename in os.listdir(directory):
+        # Check that the file has a .ics extension
+        if filename.endswith('.ics'):
+            # Open the file for in-place editing
+            with fileinput.FileInput(os.path.join(directory, filename), inplace=True) as file:
+                # Loop over each line in the file
+                for line in file:
+                    # Replace the X-WR-TIMEZONE property with the replacement value
+                    if line.startswith('X-WR-TIMEZONE:'):
+                        print(replacement)
+                    else:
+                        print(line, end='')
 
 def get_current_events_from_files(path):
     
@@ -181,6 +293,10 @@ if __name__ == '__main__':
 
         # retrieve events from the iCal feed
         if feed['files']:
+            logger.info('> Downloading events from ENAC')
+            get_enac_ics(feed['download'],feed['source'],'https://aurion-prod.enac.fr/faces/Login.xhtml',config.get('ICAL_FEED_USER'),config.get('ICAL_FEED_PASS'),config.get('ICAL_DAYS_TO_SYNC') // 30)
+            logger.info('> Patching iCal files for google timezone')
+            patch_ics_files(feed['source'])
             logger.info('> Retrieving events from local folder')
             ical_cal = get_current_events_from_files(feed['source'])
         else:
@@ -217,7 +333,6 @@ if __name__ == '__main__':
 
         # retrieve the Google Calendar object itself
         gcal_cal = service.calendars().get(calendarId=feed['destination']).execute()
-
         logger.info('> Processing Google Calendar events...')
         gcal_event_ids = [ev['id'] for ev in gcal_events]
 
@@ -259,7 +374,7 @@ if __name__ == '__main__':
                 # event name can be left unset, in which case there's no summary field
                 gcal_name = gcal_event.get('summary', None)
                 log_name = '<unnamed event>' if gcal_name is None else gcal_name
-
+                #logger.debug(f"time_differ = {gcal_begin}, {ical_event.start}, {gcal_end}, {ical_event.end}")
                 times_differ = gcal_begin != ical_event.start or gcal_end != ical_event.end
                 titles_differ = gcal_name != ical_event.summary
                 locs_differ = gcal_has_location != ical_has_location and gcal_event.get('location') != ical_event.location
