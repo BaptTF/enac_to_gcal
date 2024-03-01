@@ -6,7 +6,7 @@ Ce script utilise **Google Chrome** principalement parce que c'est le navigateur
 ## UTILISER LE SCRIPT
 
 1. Copy `config.py.example` to a new file `config.py` or a custom file (see *Multiple Configurations* below)
-2. Modify the value of `ICAL_FEEDS` to configure your calendars. It should contain a list with one or more entries where each entry is a dict with the following structure:
+2. Modify the value of `ICAL_FEEDS` to configure your calendars in the `config.py` you just created. It should contain a list with one or more entries where each entry is a dict with the following structure:
 ```python
 ICAL_FEEDS = [
     {
@@ -19,7 +19,12 @@ ICAL_FEEDS = [
     },
 ]
 ```
-3. Tu dois mettre ton nom d'utilisateur et mdp dans `ICAL_FEED_USER` et `ICAL_FEED_PASS`. 
+3. Tu dois mettre ton nom d'utilisateur et mdp dans `ICAL_FEED_USER` et `ICAL_FEED_PASS` dans le fichier `config.py`. 
+```python
+# Authentication information for the ical feeds.
+ICAL_FEED_USER = "PUT YOUR ENAC LOGIN HERE"
+ICAL_FEED_PASS = "PUT YOUR ENAC PASSWORD HERE"
+```
 4. Run `pip install -r requirements.txt`
 5. Go through the process of registering an app in the Google Calendar API dashboard in order to obtain an OAuth client ID. This process is described at https://developers.google.com/google-apps/calendar/quickstart/python. It's important to select "Desktop app" for the OAuth "Application Type" field. Once the credentials are created, download the JSON file, rename it to `ical_to_gcal_sync_client_secret.json` and  place it in the same location as the script. 
 6. Until recently you could leave your Google Cloud project in "testing" mode and the OAuth flow would work indefinitely. However as [described here](https://support.google.com/cloud/answer/10311615#publishing-status&zippy=%2Ctesting) any tokens for apps in this mode will now expire after 7 days, including refresh tokens. To avoid having to manually re-auth every time this happens, go to [your OAuth consent page configuration](https://console.cloud.google.com/apis/credentials/consent) and set the "Publishing status" to "Production". This will display a warning that you need to do a lot of verification steps, but things still seem to work if you ignore the warnings. 
