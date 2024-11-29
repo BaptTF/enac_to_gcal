@@ -334,8 +334,8 @@ if __name__ == '__main__':
         if feed['files']:
             logger.info('> Downloading events from ENAC')
             get_enac_ics(feed['download'],feed['source'],'https://aurion-prod.enac.fr/faces/Login.xhtml',config.get('ICAL_FEED_USER'),config.get('ICAL_FEED_PASS'),config.get('ICAL_DAYS_TO_SYNC') // 30)
-            #logger.info('> Patching iCal files for google timezone')
-            #patch_ics_files(feed['source'])
+            logger.info('> Patching iCal files for google timezone')
+            patch_ics_files(feed['source'])
             logger.info('> Retrieving events from local folder')
             ical_cal = get_current_events_from_files(feed['source'])
         else:
