@@ -24,7 +24,7 @@ from httplib2 import Http
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.alert import Alert
 
 config = {}
@@ -53,16 +53,16 @@ def get_enac_ics(downloadPath, icsPath, url, user, password, nombre_de_mois):
     else:
         logger.error("Impossible de supprimer le fichier planning.ics car il n'existe pas")
     for i in range(1,nombre_de_mois):
-        if os.path.exists(icsPath + f"/planning ({i}).ics"):
-            os.remove(icsPath + f"/planning ({i}).ics")
+        if os.path.exists(icsPath + f"/planning({i}).ics"):
+            os.remove(icsPath + f"/planning({i}).ics")
         else:
-            logger.error(f"Impossible de supprimer le fichier planning ({i}).ics car il n'existe pas")
+            logger.error(f"Impossible de supprimer le fichier planning({i}).ics car il n'existe pas")
     chrome_options = Options()
-    chrome_options.add_argument('--headless=new')  # Run browser in headless mode
+    #chrome_options.add_argument('--headless')  # Run browser in headless mode
     #browser_locale = 'fr'
     #chrome_options.add_argument("--lang={}".format(browser_locale))
     logger.info("> Lancement du navigateur")
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Firefox(options=chrome_options)
     driver.implicitly_wait(10)
     logger.info("> Connexion au site de ENAC")
     driver.get(url)
@@ -79,22 +79,23 @@ def get_enac_ics(downloadPath, icsPath, url, user, password, nombre_de_mois):
     logger.info("> Login Success")
     time.sleep(2)
     driver.find_element(By.ID, "j_idt28").click()
-    time.sleep(2)
-    try:
-        driver.find_element(By.LINK_TEXT, "Mon emploi du temps").click()
-    except:
-        driver.find_element(By.LINK_TEXT, "My schedule").click()
+    time.sleep(10)
+    driver.find_element(By.LINK_TEXT, "Mon emploi du temps").click()
+    # try:
+    #     driver.find_element(By.LINK_TEXT, "Mon emploi du temps").click()
+    # except:
+    #     driver.find_element(By.LINK_TEXT, "My schedule").click()
     time.sleep(2)
     driver.find_element(By.XPATH, "//button[@class='fc-month-button ui-button ui-state-default ui-corner-left ui-corner-right']").click()
     time.sleep(2)
     logger.info("Téléchargement du planning pour le mois: " + str(1))
     try:
-        driver.find_element(By.ID, "form:j_idt121").click()
+        driver.find_element(By.ID, "form:j_idt122").click()
     except:
         logger.error("Erreur lors du téléchargement du planning pour le mois: " + str(1))
         logger.info("> Retrying to download the file in 2s")
         time.sleep(2)
-        driver.find_element(By.ID, "form:j_idt121").click()
+        driver.find_element(By.ID, "form:j_idt122").click()
     time.sleep(2)
     for _ in range(2,nombre_de_mois+1):
         try:
@@ -103,7 +104,7 @@ def get_enac_ics(downloadPath, icsPath, url, user, password, nombre_de_mois):
             time.sleep(5)
             driver.find_element(By.XPATH, "//button[@class='fc-next-button ui-button ui-state-default ui-corner-left ui-corner-right']").click()
             time.sleep(5)
-            driver.find_element(By.ID, "form:j_idt121").click()
+            driver.find_element(By.ID, "form:j_idt122").click()
             time.sleep(5)
         except:
             logger.error("Erreur lors du téléchargement du planning pour le mois: " + str(_))
@@ -116,10 +117,10 @@ def get_enac_ics(downloadPath, icsPath, url, user, password, nombre_de_mois):
     else:
         logger.error("Impossible de déplacer le fichier planning.ics car il n'existe pas")
     for i in range(1,nombre_de_mois):
-        if os.path.exists(downloadPath + f"/planning ({i}).ics"):
-            shutil.move(downloadPath + f"/planning ({i}).ics", icsPath)
+        if os.path.exists(downloadPath + f"/planning({i}).ics"):
+            shutil.move(downloadPath + f"/planning({i}).ics", icsPath)
         else:
-            logger.error(f"Impossible de déplacer le fichier planning ({i}).ics car il n'existe pas")
+            logger.error(f"Impossible de déplacer le fichier planning({i}).ics car il n'existe pas")
     time.sleep(2)
 
 def patch_ics_files(directory):
@@ -262,6 +263,39 @@ def get_gcal_datetime(py_datetime, gcal_timezone):
 def get_gcal_date(py_datetime):
     return {u'date': py_datetime.strftime('%Y-%m-%d')}
 
+def ics_color(title):
+    """
+    Returns the colorId to use for the event based on the title of the event
+
+    Color ID	Color Name	Hex Code
+    1	Lavender	#7986cb
+    2	Sage	#33b679
+    3	Grape	#8e24aa
+    4	Flamingo	#e67c73
+    5	Banana	#f0e68c
+    6	Teal	#138d75
+    7	Sky	#82b1ff
+    8	Grapefruit	#ff8f00
+    9	Sandstone	#d97d52
+    10	Blueberry	#5978bb
+    11	Raspberry	#e91e63
+    12	Mint	#a6ffcc
+    13	Olive	#a2cf6e
+    14	Pumpkin	#ff7c4d
+    15	Apricot	#ffbf8f
+    16	Sky Blue	#87cefa
+    """
+    # test if color_ics_dict exits
+    if color_ics_dict is not None:
+        # test if the name of the event is in the dictionary
+        for title_color in color_ics_dict.keys():
+            if title_color.lower() in title.lower():
+                #print(title_color + " is in " + title.lower())
+                # return the color ID corresponding to the title
+                return color_ics_dict[title_color]
+    # return the default color ID
+    return 0
+
 def create_id(uid, begintime, endtime, prefix=''):
     """ Converts ical UUID, begin and endtime to a valid Gcal ID
 
@@ -300,8 +334,8 @@ if __name__ == '__main__':
         if feed['files']:
             logger.info('> Downloading events from ENAC')
             get_enac_ics(feed['download'],feed['source'],'https://aurion-prod.enac.fr/faces/Login.xhtml',config.get('ICAL_FEED_USER'),config.get('ICAL_FEED_PASS'),config.get('ICAL_DAYS_TO_SYNC') // 30)
-            logger.info('> Patching iCal files for google timezone')
-            patch_ics_files(feed['source'])
+            #logger.info('> Patching iCal files for google timezone')
+            #patch_ics_files(feed['source'])
             logger.info('> Retrieving events from local folder')
             ical_cal = get_current_events_from_files(feed['source'])
         else:
@@ -394,9 +428,32 @@ if __name__ == '__main__':
                 if descs_differ: changes.append("descriptions")
                 if needs_undelete: changes.append("undeleted")
 
+                try:
+                    color_ics_dict = config['COLOR_ICS_DICT']
+                except KeyError:
+                    print("No COLOR_ICS_DICT in config.py")
+                    color_ics_dict = None
+                # appel fonction color
+                color_id = ics_color(gcal_event['summary'])
+
+                gcal_color = gcal_event.get('colorId')
+
+                if(gcal_color is None):
+                    gcal_color = 0
+                else:
+                    gcal_color = int(gcal_color)
+                if color_id != gcal_color:
+                    #print("color_id: " + str(color_id) + " gcal_color: " + str(gcal_color))
+                    color_differ = True
+                else:
+                    color_differ = False
+
+                if color_differ: changes.append("colors")
+
+
                 # check if the iCal event has a different: start/end time, name, location,
                 # or description, and if so sync the changes to the GCal event
-                if needs_undelete or times_differ or titles_differ or locs_differ or descs_differ:
+                if needs_undelete or times_differ or titles_differ or locs_differ or descs_differ or color_differ:
                     logger.info(u'> Updating event "{}" due to changes: {}'.format(log_name, ", ".join(changes)))
                     delta = ical_event.end - ical_event.start
                     # all-day events handled slightly differently
@@ -421,6 +478,8 @@ if __name__ == '__main__':
                     gcal_event['source'] = {'title': 'Imported from ical_to_gcal_sync.py', 'url': url_feed}
                     gcal_event['location'] = ical_event.location
 
+                    gcal_event['colorId'] = color_id
+
                     service.events().update(calendarId=feed['destination'], eventId=eid, body=gcal_event).execute()
                     time.sleep(config['API_SLEEP_TIME'])
 
@@ -438,6 +497,9 @@ if __name__ == '__main__':
                     url_feed = feed['source']
                 gcal_event['source'] = {'title': 'Imported from ical_to_gcal_sync.py', 'url': url_feed}
                 gcal_event['location'] = ical_event.location
+
+                color_id = ics_color(gcal_event['summary'])
+                gcal_event['colorId'] = color_id
 
                 # check if no time specified in iCal, treat as all day event if so
                 delta = ical_event.end - ical_event.start

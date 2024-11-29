@@ -1,0 +1,149 @@
+POST /login HTTP/1.1
+Host: aurion-prod.enac.fr
+Cookie: _ga=GA1.1.1443288850.1732655049; JSESSIONID=9239AF8CFA5E1F7B2DD128F62A8845A6; _ga_3CBDRH9MNM=GS1.1.1732655049.1.1.1732658838.0.0.0
+Content-Length: 48
+Cache-Control: max-age=0
+Sec-Ch-Ua: "Chromium";v="121", "Not A(Brand";v="99"
+Sec-Ch-Ua-Mobile: ?0
+Sec-Ch-Ua-Platform: "Linux"
+Upgrade-Insecure-Requests: 1
+Origin: https://aurion-prod.enac.fr
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.160 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: https://aurion-prod.enac.fr/faces/Login.xhtml
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Priority: u=0, i
+Connection: close
+
+username=paillaem&password=C89FGU*5kUfg&j_idt28=
+
+
+
+GET / HTTP/1.1
+Host: aurion-prod.enac.fr
+Cookie: _ga=GA1.1.1443288850.1732655049; _ga_3CBDRH9MNM=GS1.1.1732655049.1.1.1732658838.0.0.0; JSESSIONID=9239AF8CFA5E1F7B2DD128F62A8845A6
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.160 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Sec-Ch-Ua: "Chromium";v="121", "Not A(Brand";v="99"
+Sec-Ch-Ua-Mobile: ?0
+Sec-Ch-Ua-Platform: "Linux"
+Referer: https://aurion-prod.enac.fr/faces/Login.xhtml
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Priority: u=0, i
+Connection: close
+
+
+POST /faces/MainMenuPage.xhtml HTTP/1.1
+Host: aurion-prod.enac.fr
+Cookie: JSESSIONID=9239AF8CFA5E1F7B2DD128F62A8845A6;
+Content-Length: 441
+Cache-Control: max-age=0
+Sec-Ch-Ua: "Chromium";v="121", "Not A(Brand";v="99"
+Sec-Ch-Ua-Mobile: ?0
+Sec-Ch-Ua-Platform: "Linux"
+Upgrade-Insecure-Requests: 1
+Origin: https://aurion-prod.enac.fr
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.160 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: https://aurion-prod.enac.fr/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Priority: u=0, i
+Connection: close
+
+form=form&form%3AlargeurDivCenter=1605&form%3AidInit=webscolaapp.MainMenuPage_5151765382358539267&form%3Asauvegarde=&form%3Aj_idt758%3Aj_idt761_view=basicDay&form%3Aj_idt884%3Aj_idt886_dropdown=1&form%3Aj_idt884%3Aj_idt886_mobiledropdown=1&form%3Aj_idt884%3Aj_idt886_page=0&form%3Aj_idt871_focus=&form%3Aj_idt871_input=44239&javax.faces.ViewState=4448856454288305047:-3606175297656863341&form%3Asidebar=form%3Asidebar&form%3Asidebar_menuid=1
+
+
+
+
+GET /faces/Planning.xhtml HTTP/1.1
+Host: aurion-prod.enac.fr
+Cookie: _ga=GA1.1.1443288850.1732655049; JSESSIONID=9239AF8CFA5E1F7B2DD128F62A8845A6; _ga_3CBDRH9MNM=GS1.1.1732655049.1.1.1732658865.0.0.0
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.160 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Sec-Ch-Ua: "Chromium";v="121", "Not A(Brand";v="99"
+Sec-Ch-Ua-Mobile: ?0
+Sec-Ch-Ua-Platform: "Linux"
+Referer: https://aurion-prod.enac.fr/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Priority: u=0, i
+Connection: close
+
+
+    POST /faces/Planning.xhtml HTTP/1.1
+    Host: aurion-prod.enac.fr
+    Cookie: JSESSIONID=9239AF8CFA5E1F7B2DD128F62A8845A6;
+    Content-Length: 640
+    Sec-Ch-Ua: "Chromium";v="121", "Not A(Brand";v="99"
+    Sec-Ch-Ua-Mobile: ?0
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.160 Safari/537.36
+    Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+    Accept: application/xml, text/xml, */*; q=0.01
+    Faces-Request: partial/ajax
+    X-Requested-With: XMLHttpRequest
+    Sec-Ch-Ua-Platform: "Linux"
+    Origin: https://aurion-prod.enac.fr
+    Sec-Fetch-Site: same-origin
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Dest: empty
+    Referer: https://aurion-prod.enac.fr/faces/Planning.xhtml
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+    Priority: u=1, i
+    Connection: close
+
+    javax.faces.partial.ajax=true&javax.faces.source=form%3Aj_idt119&javax.faces.partial.execute=form%3Aj_idt119&javax.faces.partial.render=form%3Aj_idt119&form%3Aj_idt119=form%3Aj_idt119&form%3Aj_idt119_start=1732489200000&form%3Aj_idt119_end=1732921200000&form=form&form%3AlargeurDivCenter=&form%3AidInit=webscolaapp.Planning_-632960416438420463&form%3Adate_input=25%2F11%2F2024&form%3Aweek=48-2024&form%3Aj_idt119_view=agendaWeek&form%3AoffsetFuseauNavigateur=-3600000&form%3Aonglets_activeIndex=0&form%3Aonglets_scrollState=0&form%3Aj_idt245_focus=&form%3Aj_idt245_input=44239&javax.faces.ViewState=-3559852863642708992:-7456047000973232460
+
+
+
+
+POST /faces/Planning.xhtml HTTP/1.1
+Host: aurion-prod.enac.fr
+Cookie: _ga=GA1.1.1443288850.1732655049; JSESSIONID=9239AF8CFA5E1F7B2DD128F62A8845A6; _ga_3CBDRH9MNM=GS1.1.1732655049.1.1.1732660603.0.0.0
+Content-Length: 423
+Cache-Control: max-age=0
+Sec-Ch-Ua: "Chromium";v="121", "Not A(Brand";v="99"
+Sec-Ch-Ua-Mobile: ?0
+Sec-Ch-Ua-Platform: "Linux"
+Upgrade-Insecure-Requests: 1
+Origin: https://aurion-prod.enac.fr
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.160 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: https://aurion-prod.enac.fr/faces/Planning.xhtml
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Priority: u=0, i
+Connection: close
+
+form=form&form%3AlargeurDivCenter=1620&form%3AidInit=webscolaapp.Planning_-5259322795945376640&form%3Adate_input=25%2F11%2F2024&form%3Aweek=48-2024&form%3Aj_idt119_view=agendaWeek&form%3AoffsetFuseauNavigateur=-3600000&form%3Aonglets_activeIndex=0&form%3Aonglets_scrollState=0&form%3Aj_idt245_focus=&form%3Aj_idt245_input=44239&javax.faces.ViewState=-3559852863642708992:-7456047000973232460&form%3Aj_idt122=form%3Aj_idt122
+
