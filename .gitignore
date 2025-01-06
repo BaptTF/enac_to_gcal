@@ -6,7 +6,6 @@
 /config.py
 config copy.py
 ics
-enac.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

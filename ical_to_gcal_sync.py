@@ -26,6 +26,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.alert import Alert
+from enac import get_enac_ics_request
 
 config = {}
 config_path=os.environ.get('CONFIG_PATH', 'config.py')
@@ -333,11 +334,15 @@ if __name__ == '__main__':
         # retrieve events from the iCal feed
         if feed['files']:
             logger.info('> Downloading events from ENAC')
-            get_enac_ics(feed['download'],feed['source'],'https://aurion-prod.enac.fr/faces/Login.xhtml',config.get('ICAL_FEED_USER'),config.get('ICAL_FEED_PASS'),config.get('ICAL_DAYS_TO_SYNC') // 30)
+            get_enac_ics_request(feed.get('ICAL_FEED_USER'),feed.get('ICAL_FEED_PASS'),config.get('ICAL_DAYS_TO_SYNC') // 30)
             logger.info('> Patching iCal files for google timezone')
             patch_ics_files(feed['source'])
             logger.info('> Retrieving events from local folder')
             ical_cal = get_current_events_from_files(feed['source'])
+            # remove ics files in ics folder
+            for file in os.listdir(feed['source']):
+                if file.endswith(".ics"):
+                    os.remove(os.path.join(feed['source'], file))
         else:
             logger.info('> Retrieving events from iCal feed')
             ical_cal = get_current_events(feed_url_or_path=feed['source'], files=False)
@@ -429,7 +434,7 @@ if __name__ == '__main__':
                 if needs_undelete: changes.append("undeleted")
 
                 try:
-                    color_ics_dict = config['COLOR_ICS_DICT']
+                    color_ics_dict = feed['COLOR_ICS_DICT']
                 except KeyError:
                     print("No COLOR_ICS_DICT in config.py")
                     color_ics_dict = None
